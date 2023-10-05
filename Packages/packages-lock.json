@@ -1,11 +1,5 @@
 {
   "dependencies": {
-    "com.siber.utility": {
-      "version": "file:SiberUtility",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
-    },
     "com.unity.collab-proxy": {
       "version": "2.0.7",
       "depth": 0,
