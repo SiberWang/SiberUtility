@@ -57,6 +57,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+.idea/
+Plugins/Editor/JetBrains
+Plugins/Editor/JetBrains.meta
 
 # Crashlytics generated file
 crashlytics-build.properties
