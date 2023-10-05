@@ -2,6 +2,9 @@
 
 namespace SiberUtility.Tools
 {
+    /// <summary> 時間工具
+    /// <para> (Time, TimeSpan)</para>
+    /// </summary>
     public static class TimeHelper
     {
     #region ========== [Public Methods] ==========

@@ -4,6 +4,9 @@ using UnityEngine.Assertions;
 
 namespace SiberUtility.Tools
 {
+    /// <summary> 數學算式工具
+    /// <para> (Abs, Clamp, Round, Between)</para>
+    /// </summary>
     public static class MathHelper
     {
     #region ========== [Public Methods] ==========
