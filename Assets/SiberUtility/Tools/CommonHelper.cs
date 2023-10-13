@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace SiberUtility.Tools
 {
@@ -9,6 +10,18 @@ namespace SiberUtility.Tools
         public static void Toggle(ref bool boolean)
         {
             boolean = !boolean;
+        }
+
+        /// <summary> 滑鼠位置 (World) </summary>
+        /// <param name="camera"> 指定Camera </param>
+        public static Vector2 GetMousePosition(Camera camera = null)
+        {
+            if (camera == null) camera = Camera.main;
+            Assert.IsNotNull(camera, "camera == null");
+            var mousePos = Input.mousePosition;
+            mousePos.z = -camera.transform.position.z;
+            var result = camera.ScreenToWorldPoint(mousePos);
+            return result;
         }
     }
 
@@ -42,6 +55,18 @@ namespace SiberUtility.Tools
         {
             if (spriteRenderer == null) return;
             spriteRenderer.enabled = isEnable;
+        }
+    }
+
+    public static class ColorHelper
+    {
+        public static Color GetColorByHtml(string htmlString, float alpha = 1f)
+        {
+            var color = Color.white;
+            if (ColorUtility.TryParseHtmlString("#" + htmlString, out var htmlColor))
+                color = htmlColor;
+            color.a = alpha;
+            return color;
         }
     }
 }

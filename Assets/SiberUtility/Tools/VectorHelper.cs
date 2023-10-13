@@ -43,20 +43,30 @@ namespace SiberUtility.Tools
         /// <param name="magnitude"> 依據的向量長度 </param>
         public static bool IsCloseThePoint(Vector2 pointA, Vector2 pointB, float magnitude)
         {
-            var distance = Distance_By_SqrMagnitude(pointA, pointB);
-            return distance <= magnitude * magnitude;
+            var distance    = Distance_By_SqrMagnitude(pointA, pointB);
+            var doubleValue = magnitude * magnitude;
+            return distance <= doubleValue;
         }
 
-        /// <summary> 滑鼠位置 (World) </summary>
-        /// <param name="camera"> 指定Camera </param>
-        public static Vector2 GetMousePosition(Camera camera = null)
+        /// <summary> 貝賽爾曲線 </summary>
+        /// https://youtu.be/c3H5qi0WHHw?si=TKAt2jvSc6Ku3FPg 參考來源
+        public static Vector2 Bezier(float time, Vector2 pointA, Vector2 pointB, Vector2 pointC)
         {
-            if (camera == null) camera = Camera.main;
-            Assert.IsNotNull(camera, "camera == null");
-            var mousePos = Input.mousePosition;
-            mousePos.z = -camera.transform.position.z;
-            var result = camera.ScreenToWorldPoint(mousePos);
-            return result;
+            var ab = Vector2.Lerp(pointA, pointB, time);
+            var bc = Vector2.Lerp(pointB, pointC, time);
+            return Vector2.Lerp(ab, bc, time);
+        }
+
+        public static Vector2 SetZero(this Vector2 point)
+        {
+            point = Vector2.zero;
+            return point;
+        }
+
+        public static Vector3 SetZero(this Vector3 point)
+        {
+            point = Vector3.zero;
+            return point;
         }
 
     #endregion
