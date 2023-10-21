@@ -57,16 +57,4 @@ namespace SiberUtility.Tools
             spriteRenderer.enabled = isEnable;
         }
     }
-
-    public static class ColorHelper
-    {
-        public static Color GetColorByHtml(string htmlString, float alpha = 1f)
-        {
-            var color = Color.white;
-            if (ColorUtility.TryParseHtmlString("#" + htmlString, out var htmlColor))
-                color = htmlColor;
-            color.a = alpha;
-            return color;
-        }
-    }
 }
