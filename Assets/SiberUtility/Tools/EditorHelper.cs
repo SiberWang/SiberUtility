@@ -9,7 +9,17 @@ namespace SiberUtility.Tools
 {
     public class EditorHelper
     {
-        public static List<string> GetFileAssetPaths(Type type, string path)
+        public static string GetFileAssetPath(Type type, string path = "Assets/")
+        {
+            return GetFileAssetPaths(type, path).First();
+        }
+
+        public static string GetFileAssetPath<T>(string path = "Assets/") where T : class
+        {
+            return GetFileAssetPaths<T>(path).First();
+        }
+
+        public static List<string> GetFileAssetPaths(Type type, string path = "Assets/")
         {
             var st = new List<string>();
             if (string.IsNullOrEmpty(path)) return st;
@@ -25,7 +35,7 @@ namespace SiberUtility.Tools
             return st;
         }
 
-        public static List<string> GetFileAssetPaths<T>(string path) where T : class
+        public static List<string> GetFileAssetPaths<T>(string path = "Assets/") where T : class
         {
             var result = new List<string>();
             if (string.IsNullOrEmpty(path)) return result;
