@@ -1,38 +1,36 @@
-﻿using UnityEditor;
+﻿using UnityEngine;
 
 namespace SiberUtility.Systems.FileSaves
 {
     /// <summary> 儲存系統 </summary>
     /// 需繼承來使用，尤其是設定 FileName
-    public abstract class BaseSaveSystem : ISaveSystem
+    /// <typeparam name="T"> 自定義 Data </typeparam>
+    public abstract class BaseSaveSystem<T> : ISaveSystem<T> where T : new()
     {
     #region ========== [Protected Variables] ==========
 
-        protected static string FileName => "Game";
+        protected virtual string FileName        => "My Unity Game";
+        protected virtual string Client_FileName => $"{FileName}.json";
+        protected virtual string WebGL_FileName  => FileName;
+        protected virtual string DataPath        => Application.persistentDataPath;
+
+        protected T saveFile;
 
     #endregion
 
-    #region ========== [Private Variables] ==========
-
-        private static string   client_FileName = FileName + ".json";
-        private static string   webGL_FileName  = FileName;
-        private        SaveFile saveFile;
-    
-    #endregion
-    
     #region ========== [Interface Methods] ==========
 
-        void ISaveSystem.Save(SaveFile saveFile)
+        public void Save(T saveFile)
         {
         #if UNITY_WEBGL
-        SaveHelper.SaveByPlayerPrefs(webGLFileName, saveFile);
+            SaveHelper.SaveByPlayerPrefs(WebGL_FileName, saveFile);
         #else
-            SaveHelper.SaveByJson(client_FileName, saveFile);
+            SaveHelper.SaveByJson(Client_FileName, saveFile, DataPath);
         #endif
             this.saveFile = saveFile;
         }
 
-        SaveFile ISaveSystem.Load()
+        public T Load()
         {
             return saveFile ??= GetFile();
         }
@@ -42,51 +40,35 @@ namespace SiberUtility.Systems.FileSaves
     #region ========== [Private Methods] ==========
 
         /// <summary> 獲得記錄檔 </summary>
-        private SaveFile GetFile()
+        private T GetFile()
         {
         #if UNITY_WEBGL
-        return GetWebGL_SaveFile();
+            return GetWebGL_SaveFile();
         #else
             return GetClient_SaveFile();
         #endif
         }
 
         /// <summary> 讀取 Json 紀錄檔 (本地端 用) </summary>
-        private SaveFile GetClient_SaveFile()
+        private T GetClient_SaveFile()
         {
-            var loadSaveFile = SaveHelper.LoadFromJson<SaveFile>(client_FileName);
+            var loadSaveFile = SaveHelper.LoadFromJson<T>(Client_FileName, DataPath);
             if (loadSaveFile != null) return loadSaveFile;
-            loadSaveFile = new SaveFile();
-            SaveHelper.SaveByJson(client_FileName, loadSaveFile);
+            loadSaveFile = new T();
+            SaveHelper.SaveByJson(Client_FileName, loadSaveFile, DataPath);
             return loadSaveFile;
         }
 
         /// <summary> 讀取 PlayerPrefs 檔案 (WebGL 用) </summary>
-        private SaveFile GetWebGL_SaveFile()
+        private T GetWebGL_SaveFile()
         {
-            var loadSaveFile = SaveHelper.LoadFromPlayerPrefs<SaveFile>(webGL_FileName);
+            var loadSaveFile = SaveHelper.LoadFromPlayerPrefs<T>(WebGL_FileName);
             if (loadSaveFile != null) return loadSaveFile;
-            loadSaveFile = new SaveFile();
-            SaveHelper.SaveByPlayerPrefs(client_FileName, loadSaveFile);
+            loadSaveFile = new T();
+            SaveHelper.SaveByPlayerPrefs(Client_FileName, loadSaveFile);
             return loadSaveFile;
         }
 
     #endregion
-
-    #if UNITY_EDITOR
-
-        [MenuItem("SiberUtility/[PC] Delete SaveFile (Json)")]
-        public static void OnDeleteInMenuJson()
-        {
-            SaveHelper.DeleteJson(client_FileName);
-        }
-
-        [MenuItem("SiberUtility/[WebGL] Delete SaveFile (PlayerPrefs)")]
-        public static void OnDeleteInMenuPlayerPrefs()
-        {
-            SaveHelper.DeletePlayerPrefs();
-        }
-
-    #endif
     }
 }

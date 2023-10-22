@@ -13,65 +13,55 @@ namespace SiberUtility.Systems.FileSaves
     {
     #region ========== [Json SaveSystem] ==========
 
-        public static bool EnableLog   = true;
-        public static bool IsEditorLog = true;
+        public static  bool IsEditor => Application.isEditor;
+        public static  bool EnableLog   = true;
+        public static  bool IsEditorLog = true;
+        private static bool PassCondition => EnableLog && (IsEditorLog || !IsEditor);
 
-        public static void SaveByJson(string fileName, object data)
+        public static void SaveByJson(string fileName, object data, string dataPath)
         {
             var json = JsonUtility.ToJson(data);
-            var path = Path.Combine(Application.persistentDataPath, fileName);
+            var path = Path.Combine(dataPath, fileName);
 
             try
             {
                 File.WriteAllText(path, json);
-            #if UNITY_EDITOR
-                Debug.Log($"成功存取 Json 檔案到: {path}");
-            #endif
+                ShowLog($"成功存取 Json 檔案到: {path}");
             }
             catch (Exception exception)
             {
-            #if UNITY_EDITOR
-                Debug.LogError($"儲存 Json 檔案失敗: {path} , {exception}");
-            #endif
+                ShowErrorLog($"儲存 Json 檔案失敗: {path} , {exception}");
             }
         }
 
-        public static T LoadFromJson<T>(string fileName)
+        public static T LoadFromJson<T>(string fileName, string dataPath)
         {
-            var path = Path.Combine(Application.persistentDataPath, fileName);
+            var path = Path.Combine(dataPath, fileName);
             try
             {
                 var json = File.ReadAllText(path);
                 var data = JsonUtility.FromJson<T>(json);
-            #if UNITY_EDITOR
-                Debug.Log("成功讀取 Json 檔案");
-            #endif
+                ShowLog("成功讀取 Json 檔案");
                 return data;
             }
             catch (Exception exception)
             {
-            #if UNITY_EDITOR
-                Debug.LogError($"讀取 Json 檔案失敗: {path} , {exception}");
-            #endif
+                ShowErrorLog($"讀取 Json 檔案失敗: {path} , {exception}");
                 return default;
             }
         }
 
-        public static void DeleteJson(string fileName)
+        public static void DeleteJson(string fileName, string dataPath)
         {
-            var path = Path.Combine(Application.persistentDataPath, fileName);
+            var path = Path.Combine(dataPath, fileName);
             if (!File.Exists(path))
             {
-            #if UNITY_EDITOR
-                Debug.Log("已經沒有 Json 檔案可以刪除");
-            #endif
+                ShowLog("已經沒有 Json 檔案可以刪除");
                 return;
             }
 
             File.Delete(path);
-        #if UNITY_EDITOR
-            Debug.Log("成功刪除 Json 檔案");
-        #endif
+            ShowLog("成功刪除 Json 檔案");
         }
 
     #endregion
@@ -112,34 +102,20 @@ namespace SiberUtility.Systems.FileSaves
             ShowLog("成功刪除 PlayerPrefs");
         }
 
+    #endregion
+
+    #region ========== [Private Methods] ==========
+
         private static void ShowLog(string message)
         {
-            if (!EnableLog) return;
-            if (IsEditorLog)
-            {
-            #if UNITY_EDITOR
-                Debug.Log(message);
-            #endif
-            }
-            else
-            {
-                Debug.Log(message);
-            }
+            if (!PassCondition) return;
+            Debug.Log(message);
         }
 
         private static void ShowErrorLog(string message)
         {
-            if (!EnableLog) return;
-            if (IsEditorLog)
-            {
-            #if UNITY_EDITOR
-                Debug.LogError(message);
-            #endif
-            }
-            else
-            {
-                Debug.LogError(message);
-            }
+            if (!PassCondition) return;
+            Debug.LogError(message);
         }
 
     #endregion

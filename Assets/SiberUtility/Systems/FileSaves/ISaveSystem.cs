@@ -1,9 +1,9 @@
 namespace SiberUtility.Systems.FileSaves
 {
-    public interface ISaveSystem
+    public interface ISaveSystem<T>
     {
-        void Save(SaveFile saveFile);
+        void Save(T saveFile);
 
-        SaveFile Load();
+        T Load();
     }
 }
