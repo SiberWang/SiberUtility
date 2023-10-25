@@ -13,10 +13,9 @@ namespace SiberUtility.Systems.FileSaves
     {
     #region ========== [Json SaveSystem] ==========
 
-        public static  bool IsEditor => Application.isEditor;
-        public static  bool EnableLog   = true;
-        public static  bool IsEditorLog = true;
-        private static bool PassCondition => EnableLog && (IsEditorLog || !IsEditor);
+        public static bool EnableLog       = true;
+        public static bool EnableEditorLog = true;
+        public static bool IsShowLog => EnableLog && (EnableEditorLog || !Application.isEditor);
 
         public static void SaveByJson(string fileName, object data, string dataPath)
         {
@@ -108,13 +107,13 @@ namespace SiberUtility.Systems.FileSaves
 
         private static void ShowLog(string message)
         {
-            if (!PassCondition) return;
+            if (!IsShowLog) return;
             Debug.Log(message);
         }
 
         private static void ShowErrorLog(string message)
         {
-            if (!PassCondition) return;
+            if (!IsShowLog) return;
             Debug.LogError(message);
         }
 
