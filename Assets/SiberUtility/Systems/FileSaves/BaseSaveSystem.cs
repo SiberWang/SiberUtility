@@ -71,4 +71,37 @@ namespace SiberUtility.Systems.FileSaves
 
     #endregion
     }
+    
+    // <Lazy Example>
+    // public class GameSaveSystem : BaseSaveSystem<GameSaveFile>
+    // {
+    // #region ========== [Protected Variables] ==========
+    //
+    //     protected override string FileName => GameName;
+    //
+    // #endregion
+    //
+    // #region ========== [Private Variables] ==========
+    //
+    //     private const string GameName = "MyGame";
+    //
+    // #endregion
+    //
+    // #if UNITY_EDITOR
+    //
+    //     [MenuItem("MyGame/Delete Game SaveFile(Json)")]
+    //     public static void OnDeleteInMenuJson()
+    //     {
+    //         var fileName = $"{GameName}.json";
+    //         SaveHelper.DeleteJson(fileName, Application.persistentDataPath);
+    //     }
+    //
+    //     [MenuItem("MyGame/Delete Game PlayerPrefs")]
+    //     public static void OnDeleteInMenuPlayerPrefs()
+    //     {
+    //         SaveHelper.DeletePlayerPrefs();
+    //     }
+    //
+    // #endif
+    // }
 }

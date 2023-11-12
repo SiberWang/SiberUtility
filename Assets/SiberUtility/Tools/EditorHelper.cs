@@ -50,10 +50,30 @@ namespace SiberUtility.Tools
         #endif
             return result;
         }
+        
+        public static ScriptableObject GetScriptableObject(Type type)
+        {
+            return GetScriptableObjects(type).FirstOrDefault();
+        }
 
         public static T GetScriptableObject<T>() where T : ScriptableObject
         {
-            return GetScriptableObjects<T>().First();
+            return GetScriptableObjects<T>().FirstOrDefault();
+        }
+        
+        public static List<ScriptableObject> GetScriptableObjects(Type type)
+        {
+            var result = new List<ScriptableObject>();
+        #if UNITY_EDITOR
+            var guids = AssetDatabase.FindAssets($"t:{type}");
+            foreach (var guid in guids)
+            {
+                var assetPath       = AssetDatabase.GUIDToAssetPath(guid);
+                var loadAssetAtPath = AssetDatabase.LoadAssetAtPath(assetPath ,type);
+                result.Add(loadAssetAtPath as ScriptableObject);
+            }
+        #endif
+            return result;
         }
 
         public static List<T> GetScriptableObjects<T>() where T : ScriptableObject
