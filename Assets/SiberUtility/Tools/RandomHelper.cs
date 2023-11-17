@@ -105,6 +105,38 @@ namespace SiberUtility.Tools
             return randomValue <= rate;
         }
 
+        /// <summary> 獲得視窗外的隨機位置 </summary>
+        /// 螢幕座標的概念： 四個點
+        /// (0,1080) (1920,1080)
+        /// (0,0) (1920,0)
+        /// <param name="mainCamera"> 指定相機 </param>
+        public static Vector2 GetRandomScreenOutPos(Camera mainCamera)
+        {
+            var screenWidth  = Screen.width;
+            var screenHeight = Screen.height;
+
+            float offset       = 1.5f;
+            int   randomEdge   = Random.Range(0, 4);
+            var   randomWidth  = Random.Range(0, screenWidth);  // 隨機 寬
+            var   randomHeight = Random.Range(0, screenHeight); // 隨機 高
+
+            Vector2 spawnPosition = randomEdge switch
+            {
+                0 => GetWorldPos(mainCamera, randomWidth, screenHeight) + Vector2.up * offset,    //上
+                1 => GetWorldPos(mainCamera, randomWidth, 0) + Vector2.down * offset,             //下
+                2 => GetWorldPos(mainCamera, 0, randomHeight) + Vector2.left * offset,            //左
+                3 => GetWorldPos(mainCamera, screenWidth, randomHeight) + Vector2.right * offset, //右
+                _ => Vector2.zero
+            };
+            return spawnPosition;
+        }
+
+        private static Vector2 GetWorldPos(Camera mainCamera, int randomWidth, int screenHeight)
+        {
+            var position = new Vector2(randomWidth, screenHeight);
+            return mainCamera.ScreenToWorldPoint(position);
+        }
+
     #endregion
     }
 
