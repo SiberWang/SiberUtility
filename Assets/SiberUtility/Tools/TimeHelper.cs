@@ -80,6 +80,11 @@ namespace SiberUtility.Tools
             return $"{minutes}";
         }
 
+        public static bool IsBetween(this TimeSpan currentTime, TimeSpan minTime, TimeSpan maxTime)
+        {
+            return currentTime >= minTime && currentTime <= maxTime;
+        }
+
     #endregion
     }
 }

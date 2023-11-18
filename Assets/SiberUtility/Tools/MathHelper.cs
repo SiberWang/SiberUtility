@@ -94,7 +94,7 @@ namespace SiberUtility.Tools
         }
 
         /// <summary> 值是否在Min~Max之間? </summary>
-        public static bool IsBetween(float value, float minValue, float maxValue)
+        public static bool IsBetween(this float value, float minValue, float maxValue)
         {
             return maxValue >= value && value >= minValue;
         }
