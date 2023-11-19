@@ -56,18 +56,6 @@ namespace SiberUtility.Tools
             return Vector2.Lerp(ab, bc, time);
         }
 
-        public static Vector2 SetZero(this Vector2 point)
-        {
-            point = Vector2.zero;
-            return point;
-        }
-
-        public static Vector3 SetZero(this Vector3 point)
-        {
-            point = Vector3.zero;
-            return point;
-        }
-
     #endregion
     }
 }

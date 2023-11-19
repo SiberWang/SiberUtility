@@ -131,6 +131,17 @@ namespace SiberUtility.Tools
             return spawnPosition;
         }
 
+        /// <summary> 獲得圓周上的隨機位置 </summary>
+        /// <param name="radius"> 半徑 </param>
+        public static Vector2 GetRandomPosOnCircle(float radius)
+        {
+            float angle = Random.Range(0f, Mathf.PI * 2f); // 0 到 2π 的随机角度
+            float x     = Mathf.Cos(angle) * radius;
+            float y     = Mathf.Sin(angle) * radius;
+
+            return new Vector2(x, y);
+        }
+
         private static Vector2 GetWorldPos(Camera mainCamera, int randomWidth, int screenHeight)
         {
             var position = new Vector2(randomWidth, screenHeight);
