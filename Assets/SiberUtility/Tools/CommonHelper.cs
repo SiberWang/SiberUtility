@@ -6,6 +6,13 @@ namespace SiberUtility.Tools
     /// <summary> 常見的工具 </summary>
     public static class CommonHelper
     {
+        public static bool ToggleActive(this GameObject gameObject)
+        {
+            var toggleActive = !gameObject.activeSelf;
+            gameObject.SetActive(toggleActive);
+            return toggleActive;
+        }
+
         /// <summary> bool 切換 </summary>
         public static void Toggle(ref bool boolean)
         {
@@ -22,6 +29,25 @@ namespace SiberUtility.Tools
             mousePos.z = -camera.transform.position.z;
             var result = camera.ScreenToWorldPoint(mousePos);
             return result;
+        }
+
+        public static void SetFlipXY(this SpriteRenderer spriteRenderer, bool xisActive, bool yisActive)
+        {
+            if (spriteRenderer == null) return;
+            spriteRenderer.flipX = xisActive;
+            spriteRenderer.flipY = yisActive;
+        }
+
+        public static void SetFlipX(this SpriteRenderer spriteRenderer, bool isActive)
+        {
+            if (spriteRenderer == null) return;
+            spriteRenderer.flipX = isActive;
+        }
+
+        public static void SetFlipY(this SpriteRenderer spriteRenderer, bool isActive)
+        {
+            if (spriteRenderer == null) return;
+            spriteRenderer.flipY = isActive;
         }
     }
 
@@ -48,13 +74,18 @@ namespace SiberUtility.Tools
         }
     }
 
-    public static class SpriteRendererHelper
+    public static class EnableHelper
     {
-        /// <summary> SpriteRenderer 設置啟用 </summary>
-        public static void SetEnable(this SpriteRenderer spriteRenderer, bool isEnable)
+        public static void SetEnable(this Renderer renderer, bool isEnable)
         {
-            if (spriteRenderer == null) return;
-            spriteRenderer.enabled = isEnable;
+            if (renderer == null) return;
+            renderer.enabled = isEnable;
+        }
+
+        public static void SetEnable(this Behaviour behaviour, bool isEnable)
+        {
+            if (behaviour == null) return;
+            behaviour.enabled = isEnable;
         }
     }
 }

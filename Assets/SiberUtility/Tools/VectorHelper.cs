@@ -55,6 +55,14 @@ namespace SiberUtility.Tools
             var bc = Vector2.Lerp(pointB, pointC, time);
             return Vector2.Lerp(ab, bc, time);
         }
+        
+        /// <summary> 比 Unity 的 Vector2.Distance 更快！ </summary>
+        public static float Distance(Vector2 a, Vector2 b)
+        {
+            float x = a.x - b.x;
+            float y = a.y - b.y;
+            return Mathf.Sqrt(x * x + y * y);
+        }
 
     #endregion
     }
