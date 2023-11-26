@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace SiberUtility.Tools
 {
-    public class ListHelper
+    public static class ListHelper
     {
         // 清單深拷貝，用的時候不用改到原先複製的那個值
         public static List<C> CloneListFromOldList<C>(List<C> oldList) where C : class, new()
@@ -100,6 +101,12 @@ namespace SiberUtility.Tools
                                  .Except(existContentList, StringComparer.OrdinalIgnoreCase)
                                  .ToList();
             return finalList;
+        }
+
+        public static void AddByNotContain<T>(this List<T> list, T item)
+        {
+            if (!list.Contains(item))
+                list.Add(item);
         }
     }
 

@@ -9,6 +9,23 @@ namespace SiberUtility.Tools
 {
     public class EditorHelper
     {
+        /// <summary> 找資料 (可篩選) </summary>
+        /// <param name="fileName"> 檔案名稱 </param>
+        /// <param name="filter"> ex:t:script</param>
+        public static Object GetFileAsset(string fileName, string filter = "")
+        {
+            var guids  = AssetDatabase.FindAssets($"{fileName} {filter}");
+            if (guids.Length <= 0)
+            {
+                Debug.LogError($"Can't find target : [{fileName}]");
+                return null;
+            }
+
+            var path     = AssetDatabase.GUIDToAssetPath(guids[0]);
+            var instance = AssetDatabase.LoadAssetAtPath(path, typeof(Object));
+            return instance;
+        }
+
         public static string GetFileAssetPath(Type type, string path = "Assets/")
         {
             return GetFileAssetPaths(type, path).First();
@@ -50,7 +67,7 @@ namespace SiberUtility.Tools
         #endif
             return result;
         }
-        
+
         public static ScriptableObject GetScriptableObject(Type type)
         {
             return GetScriptableObjects(type).FirstOrDefault();
@@ -60,7 +77,7 @@ namespace SiberUtility.Tools
         {
             return GetScriptableObjects<T>().FirstOrDefault();
         }
-        
+
         public static List<ScriptableObject> GetScriptableObjects(Type type)
         {
             var result = new List<ScriptableObject>();
@@ -69,7 +86,7 @@ namespace SiberUtility.Tools
             foreach (var guid in guids)
             {
                 var assetPath       = AssetDatabase.GUIDToAssetPath(guid);
-                var loadAssetAtPath = AssetDatabase.LoadAssetAtPath(assetPath ,type);
+                var loadAssetAtPath = AssetDatabase.LoadAssetAtPath(assetPath, type);
                 result.Add(loadAssetAtPath as ScriptableObject);
             }
         #endif
@@ -104,6 +121,20 @@ namespace SiberUtility.Tools
             }
         #endif
             return result;
+        }
+
+        public static void PingObject(Object instance)
+        {
+        #if UNITY_EDITOR
+            EditorGUIUtility.PingObject(instance);
+        #endif
+        }
+
+        public static void SelectObject(Object instance)
+        {
+        #if UNITY_EDITOR
+            Selection.activeObject = instance;
+        #endif
         }
     }
 }
