@@ -9,23 +9,6 @@ namespace SiberUtility.Tools
 {
     public class EditorHelper
     {
-        /// <summary> 找資料 (可篩選) </summary>
-        /// <param name="fileName"> 檔案名稱 </param>
-        /// <param name="filter"> ex:t:script</param>
-        public static Object GetFileAsset(string fileName, string filter = "")
-        {
-            var guids  = AssetDatabase.FindAssets($"{fileName} {filter}");
-            if (guids.Length <= 0)
-            {
-                Debug.LogError($"Can't find target : [{fileName}]");
-                return null;
-            }
-
-            var path     = AssetDatabase.GUIDToAssetPath(guids[0]);
-            var instance = AssetDatabase.LoadAssetAtPath(path, typeof(Object));
-            return instance;
-        }
-
         public static string GetFileAssetPath(Type type, string path = "Assets/")
         {
             return GetFileAssetPaths(type, path).First();
@@ -107,7 +90,7 @@ namespace SiberUtility.Tools
         #endif
             return result;
         }
-
+        
         public static List<Object> GetAssets(string assetName)
         {
             var result = new List<Object>();
@@ -122,6 +105,36 @@ namespace SiberUtility.Tools
         #endif
             return result;
         }
+
+        /// <summary> 找資料 (可篩選) </summary>
+        /// <param name="assetName"> 檔案名稱 </param>
+        /// <param name="filter"> 篩選 ex: t:script</param>
+        /// <param name="T"> 篩選也會篩指定的 type </param>
+        public static List<T> GetAssets<T>(string assetName, string filter = "") where T : Object
+        {
+            var result = new List<T>();
+        #if UNITY_EDITOR
+            var guids = AssetDatabase.FindAssets($"{assetName} {filter} t:{typeof(T).Name}");
+            if (guids.Length <= 0) Debug.LogError($"Can't find target : [{assetName}]");
+            foreach (var guid in guids)
+            {
+                var assetPath       = AssetDatabase.GUIDToAssetPath(guid);
+                var loadAssetAtPath = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+                result.Add(loadAssetAtPath);
+            }
+        #endif
+            return result;
+        }
+
+        /// <summary> 找單一資料 (可篩選) </summary>
+        /// <param name="assetName"> 檔案名稱 </param>
+        /// <param name="filter"> 篩選 ex: t:script</param>
+        /// <param name="T"> 篩選也會篩指定的 type </param>
+        public static T GetAsset<T>(string assetName, string filter = "") where T : Object
+        {
+            return GetAssets<T>(assetName, filter).FirstOrDefault(asset => asset.name.Equals(assetName));
+        }
+        
 
         public static void PingObject(Object instance)
         {

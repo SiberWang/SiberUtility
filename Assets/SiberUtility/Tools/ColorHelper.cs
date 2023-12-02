@@ -20,5 +20,11 @@ namespace SiberUtility.Tools
             string  alphaPart = includeAlpha ? $"{color32.a:X2}" : "";
             return $"#{color32.r:X2}{color32.g:X2}{color32.b:X2}{alphaPart}";
         }
+        
+        public static Color SetAlpha(this Color color, float alpha)
+        {
+            color.a = alpha;
+            return color;
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace SiberUtility.Tools
@@ -107,6 +108,32 @@ namespace SiberUtility.Tools
         {
             if (!list.Contains(item))
                 list.Add(item);
+        }
+    }
+
+    public static class DictionaryHelper
+    {
+        public static void AddByNotContain<TKey, TValue>
+            (this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        {
+            if (!dictionary.ContainsKey(key))
+                dictionary.Add(key, value);
+        }
+
+        public static void AddOrSet<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        {
+            if (dictionary.ContainsKey(key)) dictionary[key] = value;
+            else dictionary.Add(key, value);
+        }
+
+        public static void Set<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        {
+            if (dictionary.ContainsKey(key))
+                dictionary[key] = value;
+            else
+            {
+                Debug.LogError($"Not ContainsKey: [{key}]");
+            }
         }
     }
 

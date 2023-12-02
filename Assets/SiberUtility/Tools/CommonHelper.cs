@@ -76,12 +76,21 @@ namespace SiberUtility.Tools
 
     public static class EnableHelper
     {
+        /// <summary> 擴展同: gameObject.SetActive(bool) </summary>
+        public static void SetActive(this Component component, bool isActive)
+        {
+            if (component == null) return;
+            component.gameObject.SetActive(isActive);
+        }
+
+        /// <summary> 擴展同: enabled = bool </summary>
         public static void SetEnable(this Renderer renderer, bool isEnable)
         {
             if (renderer == null) return;
             renderer.enabled = isEnable;
         }
 
+        /// <summary> 擴展同: enabled = bool </summary>
         public static void SetEnable(this Behaviour behaviour, bool isEnable)
         {
             if (behaviour == null) return;

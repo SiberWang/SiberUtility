@@ -30,6 +30,16 @@ namespace SiberUtility.Tools.Extensions
             parent.PerformActionOnChildren(child => child.gameObject.SetActive(true));
         }
 
+        public static void SetScale(this Transform transform, Vector3 scale)
+        {
+            transform.localScale = scale;
+        }
+
+        public static void AddMultScale(this Transform transform, float value)
+        {
+            transform.localScale *= value;
+        }
+
     #endregion
 
     #region ========== [Private Methods] ==========
