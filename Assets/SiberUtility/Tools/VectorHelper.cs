@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SiberUtility.Tools
 {
@@ -55,7 +57,7 @@ namespace SiberUtility.Tools
             var bc = Vector2.Lerp(pointB, pointC, time);
             return Vector2.Lerp(ab, bc, time);
         }
-        
+
         /// <summary> 比 Unity 的 Vector2.Distance 更快！ </summary>
         public static float Distance(Vector2 a, Vector2 b)
         {
@@ -63,6 +65,72 @@ namespace SiberUtility.Tools
             float y = a.y - b.y;
             return Mathf.Sqrt(x * x + y * y);
         }
+
+    #region ========== [Lazy Direction] ==========
+
+        public static DirectionType GetRandomDirectionType()
+        {
+            var directionTypes = Enum.GetValues(typeof(DirectionType));
+            var randomIndex    = Random.Range(0, directionTypes.Length);
+            var directionType  = (DirectionType)directionTypes.GetValue(randomIndex);
+            return directionType;
+        }
+        
+        public static Vector2 GetRandomDirection()
+        {
+            var directionType = GetRandomDirectionType();
+            return GetDirection(directionType);
+        }
+
+        /// <summary> 獲得 Vector2 方向 (ex: 上、下、左、右) </summary>
+        /// <param name="directionType"> 選:上、下、左、右、上左、上右、下左、下右 </param>
+        public static Vector2 GetDirection(DirectionType directionType)
+        {
+            return directionType switch
+            {
+                DirectionType.上  => Vector2.up,
+                DirectionType.下  => Vector2.down,
+                DirectionType.左  => Vector2.left,
+                DirectionType.右  => Vector2.right,
+                DirectionType.上左 => Vector2.up + Vector2.left,
+                DirectionType.上右 => Vector2.up + Vector2.right,
+                DirectionType.下左 => Vector2.down + Vector2.left,
+                DirectionType.下右 => Vector2.down + Vector2.right,
+                _                => Vector2.zero
+            };
+        }
+
+        /// <summary> 獲得 Vector2 反相的方向 (ex: 上 = 下 , 左上 = 右下) </summary>
+        /// <param name="directionType"> 選:上、下、左、右、上左、上右、下左、下右 </param>
+        public static Vector2 GetReverseDirection(DirectionType directionType)
+        {
+            return directionType switch
+            {
+                DirectionType.上  => Vector2.down,
+                DirectionType.下  => Vector2.up,
+                DirectionType.左  => Vector2.right,
+                DirectionType.右  => Vector2.left,
+                DirectionType.上左 => Vector2.down + Vector2.right,
+                DirectionType.上右 => Vector2.down + Vector2.left,
+                DirectionType.下左 => Vector2.up + Vector2.right,
+                DirectionType.下右 => Vector2.up + Vector2.left,
+                _                => Vector2.zero
+            };
+        }
+
+        public enum DirectionType
+        {
+            上,
+            下,
+            左,
+            右,
+            上左,
+            上右,
+            下左,
+            下右,
+        }
+
+    #endregion
 
     #endregion
     }
