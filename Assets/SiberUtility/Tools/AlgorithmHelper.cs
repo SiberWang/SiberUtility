@@ -121,27 +121,54 @@ namespace SiberUtility.Tools
 
     #region 2D - 面向中心
 
-        /// <summary> 面向目標 </summary>
-        /// <param name="target">目標</param>
-        /// <param name="main">要轉的對象</param>
+        /// <summary> 獲得 2D面向目標的 Quaternion </summary>
+        /// <param name="target"> A:目標 </param>
+        /// <param name="main"> B:自己 </param>
         /// <param name="correctionAngle">修正角度，如果物體角度不正確，可自行修正</param>
+        /// <example> B 面向-> A </example>>
         public static Quaternion FacingTarget(Transform target, Transform main, float correctionAngle = 0f)
         {
-            var dir   = target.position - main.position;
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var angle = FacingTargetAngle(target.position, main.position);
             return Quaternion.AngleAxis(angle + correctionAngle, Vector3.forward);
-            // return Quaternion.Euler(0f, 0f, angle + correctionAngle);
         }
 
-        /// <summary> 面向目標 </summary>
-        /// <param name="target">目標</param>
-        /// <param name="main">要轉的對象</param>
+        /// <summary> 獲得 2D面向目標的 Quaternion </summary>
+        /// <param name="targetPos"> A:目標位置 </param>
+        /// <param name="mainPos"> B:自己位置 </param>
         /// <param name="correctionAngle">修正角度，如果物體角度不正確，可自行修正</param>
+        /// /// <example> B 面向-> A </example>>
         public static Quaternion FacingTarget(Vector3 targetPos, Vector3 mainPos, float correctionAngle = 0f)
         {
-            var dir   = targetPos - mainPos;
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var angle = FacingTargetAngle(targetPos, mainPos);
             return Quaternion.AngleAxis(angle + correctionAngle, Vector3.forward);
+        }
+
+        /// <summary> 獲得 2D面向向量的 Quaternion </summary>
+        /// <param name="v"> A:垂直向量 </param>
+        /// <param name="h"> B:水平向量 </param>
+        /// <param name="correctionAngle">修正角度，如果物體角度不正確，可自行修正</param>
+        public static Quaternion FacingTarget(float v, float h, float correctionAngle = 0f)
+        {
+            var angle = FacingDirectionAngle(v, h);
+            return Quaternion.AngleAxis(angle + correctionAngle, Vector3.forward);
+        }
+
+        /// <summary> 獲得 2D面向目標的角度 (Angle) </summary>
+        /// <param name="targetPos"> A:目標位置 </param>
+        /// <param name="mainPos"> B:自己位置 </param>
+        /// /// <example> B 面向 -> A </example>> 
+        public static float FacingTargetAngle(Vector3 targetPos, Vector3 mainPos)
+        {
+            var dir   = targetPos - mainPos;
+            var angle = FacingDirectionAngle(dir.y, dir.x);
+            return angle;
+        }
+
+        /// <summary> 獲得 2D向量角度 (Angle) </summary>
+        public static float FacingDirectionAngle(float y, float x)
+        {
+            var angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
+            return angle;
         }
 
         /// <summary>
