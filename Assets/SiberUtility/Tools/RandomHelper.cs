@@ -148,6 +148,12 @@ namespace SiberUtility.Tools
             return mainCamera.ScreenToWorldPoint(position);
         }
 
+        /// <summary> 骰 0~100% 真實機率</summary>
+        public static int DiceProbability()
+        {
+            return Random.Range(0, 101);
+        }
+
     #endregion
     }
 

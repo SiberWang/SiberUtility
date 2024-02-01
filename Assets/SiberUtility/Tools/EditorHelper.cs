@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 
 namespace SiberUtility.Tools
@@ -90,7 +91,7 @@ namespace SiberUtility.Tools
         #endif
             return result;
         }
-        
+
         public static List<Object> GetAssets(string assetName)
         {
             var result = new List<Object>();
@@ -134,7 +135,7 @@ namespace SiberUtility.Tools
         {
             return GetAssets<T>(assetName, filter).FirstOrDefault(asset => asset.name.Equals(assetName));
         }
-        
+
 
         public static void PingObject(Object instance)
         {
@@ -148,6 +149,79 @@ namespace SiberUtility.Tools
         #if UNITY_EDITOR
             Selection.activeObject = instance;
         #endif
+        }
+
+        /// <summary> 全域搜尋 Type By Name </summary>
+        /// <param name="typeName"> 指定類別名稱 </param>
+        /// <param name="nameSpace"> 可指定 nameSpace , 使其更快搜到 </param>
+        public static Type GetTypeByName(string typeName, string nameSpace = "")
+        {
+            var type = Type.GetType(typeName);
+            if (type != null) return type;
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var types      = assemblies.SelectMany(a => a.GetTypes());
+
+            Type result;
+            if (string.IsNullOrEmpty(nameSpace))
+            {
+                result = types.Where(x => !x.IsAbstract && !x.IsGenericTypeDefinition && x.IsClass)
+                              .FirstOrDefault(t => t.Name == typeName);
+            }
+            else
+            {
+                result = types.Where(x => !x.IsAbstract && !x.IsGenericTypeDefinition && x.IsClass &&
+                                          x.Namespace != null &&
+                                          x.Namespace.Equals(nameSpace))
+                              .FirstOrDefault(t => t.Name == typeName);
+                Assert.IsNotNull(result, $"Search Type is null , 是否路徑找錯了? , namespace: [{nameSpace}]");
+            }
+            return result;
+        }
+
+        /// <summary> 找 XXX.Data , 利用 type string，去創建 有繼承特定腳本的項目 </summary>
+        /// <param name="handleType"> 必須是繼承於 T 的腳本名稱</param>
+        /// <returns> T = 指定的類別 </returns>
+        public static T NewNestedData<T>(string handleType) where T : class
+        {
+            if (string.IsNullOrEmpty(handleType))
+            {
+                Debug.LogError($"HandleType is empty");
+                return default;
+            }
+
+            // 目標：找出A腳本的 A.Data
+            var findMain       = GetTypeByName(handleType, typeof(T).Namespace);
+            var searchFullName = findMain.FullName + "+Data";
+            var resultType     = GetTypeByFullName(searchFullName);
+            if (resultType == null)
+            {
+                Debug.LogError($"類別: [{handleType}], 腳本內並沒有.Data , 完整路徑: [{searchFullName}]");
+                return default;
+            }
+
+            if (!resultType.IsSubclassOf(typeof(T)))
+            {
+                Debug.LogError($"指定類別並沒有繼承: [{nameof(T)}] , 請確認!");
+                return default;
+            }
+
+            var result = Activator.CreateInstance(resultType) as T;
+            return result;
+        }
+
+        /// <summary> 全域搜尋 Type By FullName </summary>
+        /// <param name="fullName"> 完整路徑名稱 (包含 namespace) </param>
+        public static Type GetTypeByFullName(string fullName)
+        {
+            var type = Type.GetType(fullName);
+            if (type != null) return type;
+
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var result = assemblies.SelectMany(a => a.GetTypes())
+                                   .Where(x => !x.IsAbstract && !x.IsGenericTypeDefinition && x.IsClass)
+                                   .FirstOrDefault(t => t.FullName == fullName);
+            return result;
         }
     }
 }
