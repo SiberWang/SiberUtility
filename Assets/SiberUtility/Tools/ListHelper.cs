@@ -109,6 +109,11 @@ namespace SiberUtility.Tools
             if (!list.Contains(item))
                 list.Add(item);
         }
+
+        public static T[] GetEnumArray<T>() where T : Enum
+        {
+            return (T[])Enum.GetValues(typeof(T));
+        }
     }
 
     public static class DictionaryHelper
