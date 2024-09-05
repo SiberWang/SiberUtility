@@ -109,6 +109,12 @@ namespace SiberUtility.Tools
             if (!list.Contains(item))
                 list.Add(item);
         }
+        
+        public static void AddByNotContain<T>(this IList list, T item)
+        {
+            if (!list.Contains(item))
+                list.Add(item);
+        }
 
         public static T[] GetEnumArray<T>() where T : Enum
         {
