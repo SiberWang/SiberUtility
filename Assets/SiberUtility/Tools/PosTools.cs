@@ -31,7 +31,7 @@ namespace SiberUtility.Tools
                     var addCircleSpawnPos = originPos + AddCircleSpawnPos(radius, angle, spacing);
                     spawnPosList.Add(addCircleSpawnPos);
                     tempCount--;
-                    if (tempCount <= 0) break;
+                    if (tempCount <= 0) return spawnPosList;
                 }
             }
 
