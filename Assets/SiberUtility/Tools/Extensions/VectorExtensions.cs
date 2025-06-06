@@ -35,5 +35,11 @@ namespace SiberUtility.Tools.Extensions
         {
             return new Vector3(vector.x + (x ?? 0), vector.y + (y ?? 0), vector.z + (z ?? 0));
         }
+        
+        public static bool IsValid(this Vector2 v)
+        {
+            return !float.IsNaN(v.x) && !float.IsNaN(v.y) &&
+                   !float.IsInfinity(v.x) && !float.IsInfinity(v.y);
+        }
     }
 }

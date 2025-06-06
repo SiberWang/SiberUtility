@@ -93,6 +93,27 @@ namespace SiberUtility.Tools
             return (int)roundValue;
         }
 
+        /// <summary>
+        /// 將浮點數四捨五入到指定的小數點位數。
+        /// </summary>
+        /// <param name="value">原始 float 數值</param>
+        /// <param name="decimalPlaces">要保留的小數位數，預設為 2</param>
+        /// <returns>已四捨五入的 float 數值</returns>
+        public static float GetRealRoundValue(float value, int decimalPlaces = 2)
+        {
+            float factor = Mathf.Pow(10f, decimalPlaces);
+            return Mathf.Round(value * factor) / factor;
+        }
+
+        /// <summary>
+        /// 將 double 數值四捨五入到指定的小數點位數。
+        /// </summary>
+        public static double GetRealRoundValue(double value, int decimalPlaces = 2)
+        {
+            double factor = Math.Pow(10, decimalPlaces);
+            return Math.Round(value * factor) / factor;
+        }
+
         /// <summary> 值是否在Min~Max之間? </summary>
         public static bool IsBetween(this float value, float minValue, float maxValue)
         {

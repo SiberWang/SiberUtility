@@ -20,7 +20,7 @@ namespace SiberUtility.Systems.FileSaves
 
     #region ========== [Interface Methods] ==========
 
-        public void Save(T saveFile)
+        public virtual void Save(T saveFile)
         {
         #if UNITY_WEBGL
             SaveHelper.SaveByPlayerPrefs(WebGL_FileName, saveFile);
@@ -30,7 +30,7 @@ namespace SiberUtility.Systems.FileSaves
             this.saveFile = saveFile;
         }
 
-        public T Load()
+        public virtual T Load()
         {
             return saveFile ??= GetFile();
         }
@@ -40,7 +40,7 @@ namespace SiberUtility.Systems.FileSaves
     #region ========== [Private Methods] ==========
 
         /// <summary> 獲得記錄檔 </summary>
-        private T GetFile()
+        protected T GetFile()
         {
         #if UNITY_WEBGL
             return GetWebGL_SaveFile();
@@ -50,7 +50,7 @@ namespace SiberUtility.Systems.FileSaves
         }
 
         /// <summary> 讀取 Json 紀錄檔 (本地端 用) </summary>
-        private T GetClient_SaveFile()
+        protected T GetClient_SaveFile()
         {
             var loadSaveFile = SaveHelper.LoadFromJson<T>(Client_FileName, DataPath);
             if (loadSaveFile != null) return loadSaveFile;
@@ -60,7 +60,7 @@ namespace SiberUtility.Systems.FileSaves
         }
 
         /// <summary> 讀取 PlayerPrefs 檔案 (WebGL 用) </summary>
-        private T GetWebGL_SaveFile()
+        protected T GetWebGL_SaveFile()
         {
             var loadSaveFile = SaveHelper.LoadFromPlayerPrefs<T>(WebGL_FileName);
             if (loadSaveFile != null) return loadSaveFile;
@@ -71,7 +71,7 @@ namespace SiberUtility.Systems.FileSaves
 
     #endregion
     }
-    
+
     // <Lazy Example>
     // public class GameSaveSystem : BaseSaveSystem<GameSaveFile>
     // {

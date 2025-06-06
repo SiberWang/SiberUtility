@@ -19,7 +19,7 @@ namespace SiberUtility.Systems.FileSaves
 
         public static void SaveByJson(string fileName, object data, string dataPath)
         {
-            var json = JsonUtility.ToJson(data);
+            var json = JsonUtility.ToJson(data, true);
             var path = Path.Combine(dataPath, fileName);
 
             try
@@ -33,15 +33,63 @@ namespace SiberUtility.Systems.FileSaves
             }
         }
 
+        public static void SaveBase64ByJson(string fileName, object data, string dataPath)
+        {
+            var json    = JsonUtility.ToJson(data);
+            var bytes   = System.Text.Encoding.UTF8.GetBytes(json);
+            var encoded = Convert.ToBase64String(bytes);
+
+            var path = Path.Combine(dataPath, fileName);
+
+            try
+            {
+                File.WriteAllText(path, encoded);
+                ShowLog($"成功存取 Json 檔案到: {path}");
+            }
+            catch (Exception exception)
+            {
+                ShowErrorLog($"儲存 Json 檔案失敗: {path} , {exception}");
+            }
+        }
+
         public static T LoadFromJson<T>(string fileName, string dataPath)
         {
             var path = Path.Combine(dataPath, fileName);
+            if (!File.Exists(path))
+            {
+                ShowErrorLog($"檔案不存在: {path}");
+                return default;
+            }
+
             try
             {
                 var json = File.ReadAllText(path);
                 var data = JsonUtility.FromJson<T>(json);
                 ShowLog("成功讀取 Json 檔案");
                 return data;
+            }
+            catch (Exception exception)
+            {
+                ShowErrorLog($"讀取 Json 檔案失敗: {path} , {exception}");
+                return default;
+            }
+        }
+
+        public static T LoadBase64FromJson<T>(string fileName, string dataPath)
+        {
+            var path = Path.Combine(dataPath, fileName);
+            if (!File.Exists(path))
+            {
+                ShowErrorLog($"檔案不存在: {path}");
+                return default;
+            }
+
+            try
+            {
+                var encoded = File.ReadAllText(path);
+                var bytes   = Convert.FromBase64String(encoded);
+                var json    = System.Text.Encoding.UTF8.GetString(bytes);
+                return JsonUtility.FromJson<T>(json);
             }
             catch (Exception exception)
             {
