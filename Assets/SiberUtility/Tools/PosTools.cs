@@ -13,7 +13,13 @@ namespace SiberUtility.Tools
         /// <param name="unit"> 單位 (每圈的單位) </param>
         /// <returns> 計算好的 Vector2 清單 </returns>
         public static List<Vector2> GetProgressiveCircleList
-            (Vector2 originPos, int posCount, float radius = 0.5f, float offset = 0.5f, int unit = 5)
+        (
+            Vector2 originPos,
+            int     posCount,
+            float   radius              = 0.5f,
+            float   offset              = 0.5f,
+            int     unit                = 5,
+            float   rotationOffsetAngle = 0f)
         {
             List<Vector2> spawnPosList = new List<Vector2>();
 
@@ -26,9 +32,10 @@ namespace SiberUtility.Tools
                 var spawnUnit = unit * (a + 1); // 每一圈的生成單位 (ex: 3 , 5 , 7 , 9)
                 for (int b = 0; b < spawnUnit; b++)
                 {
-                    var angle             = b * Mathf.PI * 2f / spawnUnit;
+                    var baseAngle         = b * Mathf.PI * 2f / spawnUnit;
+                    var finalAngle        = baseAngle + rotationOffsetAngle;
                     var spacing           = radius * offset * a;
-                    var addCircleSpawnPos = originPos + AddCircleSpawnPos(radius, angle, spacing);
+                    var addCircleSpawnPos = originPos + AddCircleSpawnPos(radius, finalAngle, spacing);
                     spawnPosList.Add(addCircleSpawnPos);
                     tempCount--;
                     if (tempCount <= 0) return spawnPosList;
@@ -40,7 +47,13 @@ namespace SiberUtility.Tools
 
         // 修改回傳型別：List<Vector2> -> List<List<Vector2>>
         public static List<List<Vector2>> GetProgressiveCircleLists
-            (Vector2 originPos, int posCount, float radius = 0.5f, float offset = 0.5f, int unit = 5)
+        (
+            Vector2 originPos,
+            int     posCount,
+            float   radius              = 0.5f,
+            float   offset              = 0.5f,
+            int     unit                = 5,
+            float   rotationOffsetAngle = 0f)
         {
             // 大清單 (裝每一圈)
             List<List<Vector2>> allRings = new List<List<Vector2>>();
@@ -59,9 +72,10 @@ namespace SiberUtility.Tools
 
                 for (int b = 0; b < spawnUnit; b++)
                 {
-                    var angle             = b * Mathf.PI * 2f / spawnUnit;
+                    var baseAngle         = b * Mathf.PI * 2f / spawnUnit;
+                    var finalAngle        = baseAngle + rotationOffsetAngle;
                     var spacing           = radius * offset * a;
-                    var addCircleSpawnPos = originPos + AddCircleSpawnPos(radius, angle, spacing);
+                    var addCircleSpawnPos = originPos + AddCircleSpawnPos(radius, finalAngle, spacing);
 
                     currentRing.Add(addCircleSpawnPos); // 加入小清單
 
@@ -93,8 +107,9 @@ namespace SiberUtility.Tools
             Vector2 originPos,
             int     startUnit,
             int     ringCount,
-            float   radius = 0.5f,
-            float   offset = 0.5f)
+            float   radius              = 0.5f,
+            float   offset              = 0.5f,
+            float   rotationOffsetAngle = 0f)
         {
             List<List<Vector2>> allRings = new List<List<Vector2>>();
 
@@ -117,11 +132,14 @@ namespace SiberUtility.Tools
                 // 內層迴圈：生成這一圈的點
                 for (int i = 0; i < countInThisRing; i++)
                 {
-                    // 角度平均分配
-                    float angle = i * Mathf.PI * 2f / countInThisRing;
+                    // 1. 角度平均分配
+                    float baseAngle = i * Mathf.PI * 2f / countInThisRing;
+
+                    // 2. [關鍵步驟]：加上旋轉偏移量
+                    float finalAngle = baseAngle + rotationOffsetAngle;
 
                     // 計算座標 (沿用你原本的 helper 方法邏輯)
-                    Vector2 posOffset = AddCircleSpawnPos(radius, angle, spacing);
+                    Vector2 posOffset = AddCircleSpawnPos(radius, finalAngle, spacing);
 
                     currentRing.Add(originPos + posOffset);
                 }

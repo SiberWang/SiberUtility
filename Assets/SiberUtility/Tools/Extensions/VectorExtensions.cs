@@ -41,5 +41,23 @@ namespace SiberUtility.Tools.Extensions
             return !float.IsNaN(v.x) && !float.IsNaN(v.y) &&
                    !float.IsInfinity(v.x) && !float.IsInfinity(v.y);
         }
+        
+        public static float PickRandomValue(this Vector2 values)
+        {
+            var min      = values.x;
+            var max      = values.y;
+            var minValue = min >= max ? max : min;
+            return Mathf.Lerp(minValue, max, Random.value);
+        }
+
+        public static int PickRandomValue(this Vector2Int values)
+        {
+            var min      = values.x;
+            var max      = values.y;
+            var minValue = min >= max ? max : min;
+            var maxValue = max + 1;
+            var range    = Random.Range(minValue, maxValue);
+            return range;
+        }
     }
 }
